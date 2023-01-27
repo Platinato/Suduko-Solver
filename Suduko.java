@@ -1,48 +1,54 @@
-import java.io.*;
 import java.util.*;
 
 public class Suduko {
     
-    public static boolean isValidSudoku(int[][] board) {
-        Map<Integer, Set<Integer>> row = new HashMap<>();
-        Map<Integer, Set<Integer>> col = new HashMap<>();
-        Map<Integer, Set<Integer>> box = new HashMap<>();
-        
-        for (int i = 0, p = -1; i < 9; i++, p = -1) {
-            if (i % 3 == 0) {
-                box.clear();
-            }
-            
-            for (int j = 0; j < 9; j++) {
-                // column
-                if (board[i][j] != 0 && col.getOrDefault(j, new HashSet<>()).contains(board[i][j])) {
-                    return false;
-                } else {
-                    col.computeIfAbsent(j, k -> new HashSet<>()).add(board[i][j]);
-                }
-
-                // row
-                if (board[i][j] != 0 && row.getOrDefault(i, new HashSet<>()).contains(board[i][j])) {
-                    return false;
-                } else {
-                    row.computeIfAbsent(i, k -> new HashSet<>()).add(board[i][j]);
-                }
-
-                if (j % 3 == 0) {
-                    p++;
-                }
-    
-                if (board[i][j] != 0 && box.getOrDefault(p, new HashSet<>()).contains(board[i][j])) {
-                    return false;
-                } else {
-                    box.computeIfAbsent(p, k -> new HashSet<>()).add(board[i][j]);
+    public static boolean isValidPuzzle(int[][] sudoku_grid) {
+        // check rows
+        for (int row = 0; row < sudoku_grid.length; row++) {
+            boolean[] check = new boolean[9];
+            for (int col = 0; col < sudoku_grid[row].length; col++) {
+                if (sudoku_grid[row][col] != 0) {
+                    if (check[sudoku_grid[row][col] - 1]) {
+                        return false;
+                    }
+                    check[sudoku_grid[row][col] - 1] = true;
                 }
             }
-
         }
-
+    
+        // check columns
+        for (int col = 0; col < sudoku_grid.length; col++) {
+            boolean[] check = new boolean[9];
+            for (int row = 0; row < sudoku_grid.length; row++) {
+                if (sudoku_grid[row][col] != 0) {
+                    if (check[sudoku_grid[row][col] - 1]) {
+                        return false;
+                    }
+                    check[sudoku_grid[row][col] - 1] = true;
+                }
+            }
+        }
+    
+        // check 3x3 sub-grids
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                boolean[] check = new boolean[9];
+                for (int row = i * 3; row < i * 3 + 3; row++) {
+                    for (int col = j * 3; col < j * 3 + 3; col++) {
+                        if (sudoku_grid[row][col] != 0) {
+                            if (check[sudoku_grid[row][col] - 1]) {
+                                return false;
+                            }
+                            check[sudoku_grid[row][col] - 1] = true;
+                        }
+                    }
+                }
+            }
+        }
+    
         return true;
     }
+    
 
     
     
@@ -101,35 +107,28 @@ public class Suduko {
     public static void getSudoku(int[][] sudoku_grid) {
         Scanner input = new Scanner(System.in);
         
+        System.out.print("Enter the values of the grid.\t\t");
+        System.out.println("Enter \'0\' for blanks");
+
         for(int i = 0; i < 9; i++) {
             for(int j = 0; j < 9; j++) {
-                System.out.println("Enter the value for the cell at row " + (i+1) + " and column " + (j+1) + ":");
+                // System.out.println("Enter the value for the cell at row " + (i+1) + " and column " + (j+1) + ":");
                 sudoku_grid[i][j] = input.nextInt();
             }
         }
+
+        System.out.println("\n");
+
+        input.close();
     }
 
     
     public static void main(String[] args) {
         
+        int[][] sudoku_grid = new int[9][9];
+        getSudoku(sudoku_grid);
         
-        // int[][] sudoku_grid = new int[9][9];
-        // getSudoku(sudoku_grid);
-        
-        
-        int[][] sudoku_grid = {
-            {5, 3, 0, 0, 7, 0, 0, 0, 0},
-            {6, 0, 0, 1, 9, 5, 0, 0, 0},
-            {0, 9, 8, 0, 0, 0, 0, 6, 0},
-            {8, 0, 0, 0, 6, 0, 0, 0, 3},
-            {4, 0, 0, 8, 0, 3, 0, 0, 1},
-            {7, 0, 0, 0, 2, 0, 0, 0, 6},
-            {0, 6, 0, 0, 0, 0, 2, 8, 0},
-            {0, 0, 0, 4, 1, 9, 0, 0, 5},
-            {0, 0, 0, 0, 8, 0, 0, 7, 9}
-        };
-        
-        if(isValidSudoku(sudoku_grid)) {
+        if(isValidPuzzle(sudoku_grid)) {
             System.out.println("This is the valid one! Preparing to solve it.");
         
             if (solve(sudoku_grid)) {
