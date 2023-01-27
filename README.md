@@ -1,4 +1,7 @@
-# Suduko Solver
+## Suduko Solver 
+```Made by Platinato```
+
+<hr>
 
 - This is the java based program.
 - It requires input from the user and performs the following activities: <br>
@@ -8,4 +11,8 @@
 
 <hr>
 
-### Made by ```Platinato```
+- To use the program:
+    1. Compile and run the `Suduko.class`
+    2. Enter the values according to 9x9 matrix
+
+<hr>
