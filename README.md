@@ -12,7 +12,7 @@
 <hr>
 
 - To use the program:
-    1. Compile and run the `Suduko.class`
+    1. Compile and run the `Suduko.java`
     2. Enter the values according to 9x9 matrix
 
 <hr>
